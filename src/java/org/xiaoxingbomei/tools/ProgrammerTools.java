@@ -9,6 +9,7 @@ import org.xiaoxingbomei.entity.request.ProgrammerRequest;
 import org.xiaoxingbomei.vo.Company;
 import org.xiaoxingbomei.vo.Programmer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -24,7 +25,7 @@ public class ProgrammerTools
     {
         log.info("获取程序员信息:{}",request);
         // 造一些数据
-        List<Programmer> programmerList = null;
+        List<Programmer> programmerList = new ArrayList<>();
         Programmer programmer1 = new Programmer();
         programmer1.setProgrammerName("小博美");
         programmer1.setEducation("本科");
@@ -46,7 +47,7 @@ public class ProgrammerTools
     public List<Company> getAllCompanyInfo()
     {
         log.info("查询全部公司");
-        List<Company> companyList = null;
+        List<Company> companyList = new ArrayList<>();
         Company company1 = new Company();
         company1.setCompanyName("腾讯");
         company1.setCompanyField("互联网");

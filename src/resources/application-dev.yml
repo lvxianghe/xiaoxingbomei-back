@@ -14,27 +14,59 @@ spring:
   ai:
     # 基于ollama去拉取模型
     ollama:
-      # base-url: http://localhost:11434
-      # 彦龙大模型
-#      base-url: http://10.244.22.55:11434
-      # 部门大模型
-      base-url: http://10.244.51.171:8000
+      # 本地大模型
+      base-url: http://localhost:11434
       chat:
-#       model: deepseek-r1:14b
-#        model: deepseek-r1:7b
-        model: deepseek-v3_Q4:latest
+        # model: deepseek-r1:14b
+        model: qwen3:14b
+
+      # 彦龙大模型
+      # base-url: http://10.244.22.55:11434
+      # chat:
+      #   model: deepseek-r1:7b
+
+      # 部门大模型
+      # base-url: http://10.244.51.171:8000
+      # chat:
+      #   model: deepseek-v3_Q4:latest
+
     # 基于openai去拉取模型
     openai:
-      base-url: http://10.244.51.171:8000
-      api-key: ollama
-      chat:
-        options:
-          model: deepseek-v3_Q4:latest
+       # 华为云提供
+       # base-url: https://maas-cn-southwest-2.modelarts-maas.com/v1/chat/completions
+       # api-key: NKyh3oxr1YzyycvaiV7N8qx1wXJr36VvVpAUsah6LYtiMsMLbNRgewCy15EDXSRe13sFIYAisWzvScACzxnRmQ
+       # chat:
+       #   options:
+       #     model: DeepSeek-R1
+      # 华为云提供
+       base-url: https://chatapi.littlewheat.com
+       api-key: sk-YiB76FYEBysWcTUw69FEGVfwqMzf1iKMILvobZg3ALVHFl63
+       chat:
+         options:
+           model: grok-3
+      # Grok
+#      base-url: https://neolovec.com/v1/chat/completions
+#      api-key: linux.do
+#      chat:
+#        options:
+#          model: grok-3
         # temperature: 0.7
-      embedding:
-        options:
-          model: bge-m3:567m
-          dimensions: 1024
+      #      embedding:
+      #        options:
+      #          model: bge-m3:567m
+      #          dimensions: 1024
+#      base-url: http://10.244.51.171:8000
+#      api-key: ollama
+#      chat:
+#        options:
+#          model: deepseek-v3_Q4:latest
+#        # temperature: 0.7
+#      embedding:
+#        options:
+#          model: bge-m3:567m
+#          dimensions: 1024
+#    openai:
+
 datasource:
   localhost:
     jdbc-url: jdbc:mysql://localhost:3306/ysx-app
@@ -42,3 +74,26 @@ datasource:
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+# 大模型多数据源配置
+ai:
+  openai:
+    grok3:
+      base-url: https://chatapi.littlewheat.com
+      api-key: sk-YiB76FYEBysWcTUw69FEGVfwqMzf1iKMILvobZg3ALVHFl63
+      model: grok-3
+      temperature: 0.7
+    gpt4:
+      base-url: https://chatapi.littlewheat.com
+      api-key: sk-YiB76FYEBysWcTUw69FEGVfwqMzf1iKMILvobZg3ALVHFl63
+      model: gpt-4o
+      temperature: 0.5
+
+  ollama:
+    deepseek:
+      base-url: http://localhost:11434
+      model: deepseek-r1:14B
+      temperature: 0.7
+    qwen3:
+      base-url: http://localhost:11434
+      model: qwen3:14b
+      temperature: 0.5

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.xiaoxingbomei.dao.localhost.ChatMapper;
 import org.xiaoxingbomei.entity.response.ResponseEntity;
+import org.xiaoxingbomei.factory.ChatClientFactory;
 import org.xiaoxingbomei.service.ChatService;
 import org.xiaoxingbomei.utils.Request_Utils;
 import org.xiaoxingbomei.vo.LlmChatHistory;
@@ -46,6 +47,13 @@ public class ChatServiceImpl implements ChatService
     private ChatClient serviceChatClient;
 
     @Autowired
+    private ChatClientFactory chatClientFactory;
+
+    @Autowired
+    @Qualifier("openAiGrokClient")
+    private ChatClient openAiGrokClient;
+
+    @Autowired
     private ChatMapper chatMapper;
 
     @Autowired
@@ -56,14 +64,15 @@ public class ChatServiceImpl implements ChatService
     // ===================================================================
 
     @Override
-    public ResponseEntity chat_for_string(String paramString)
+    public ResponseEntity chat_for_string(String prompt)
     {
         log.info("chat_for_string");
         // 1、获取前端参数
-        String prompt = Request_Utils.getParam(paramString, "prompt");
+//        String prompt = Request_Utils.getParam(paramString, "prompt");
 
         // 2、普通模式
-        String resultContent = ollamaChatClient
+//        String resultContent = ollamaChatClient
+        String resultContent = openAiChatClient
                 .prompt()
                 .user(prompt)
                 .call()
@@ -82,7 +91,10 @@ public class ChatServiceImpl implements ChatService
 
         log.info("chat_for_stream with prompt: {}", prompt);
         // 使用OpenAI进行流式响应
-        Flux<String> resultContent = ollamaChatClient
+//        Flux<String> resultContent = ollamaChatClient
+//        Flux<String> resultContent = openAiChatClient
+        ChatClient chatClient = chatClientFactory.getClient("ollama", "qwen3");
+        Flux<String> resultContent = chatClient
                 .prompt()
                 .user(prompt)
                 .advisors(a -> a.param(AbstractChatMemoryAdvisor.CHAT_MEMORY_CONVERSATION_ID_KEY, chatId))

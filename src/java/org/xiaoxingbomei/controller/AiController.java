@@ -21,12 +21,12 @@ public class AiController
 
     // =========================================================
 
-    @RequestMapping(value = ApiConstant.Chat.chat_for_string, method = RequestMethod.POST)
-    public ResponseEntity chat_for_string(@RequestBody String paramString)
+    @RequestMapping(value = ApiConstant.Chat.chat_for_string, method = RequestMethod.GET)
+    public ResponseEntity chat_for_string(@RequestParam(value = "prompt") String prompt)
     {
         ResponseEntity ret = null;
 
-        ret = chatService.chat_for_string(paramString);
+        ret = chatService.chat_for_string(prompt);
 
         return ret;
     }
