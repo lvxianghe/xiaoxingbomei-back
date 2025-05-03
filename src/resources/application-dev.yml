@@ -14,58 +14,21 @@ spring:
   ai:
     # 基于ollama去拉取模型
     ollama:
-      # 本地大模型
-      base-url: http://localhost:11434
+      base-url: xxx
       chat:
-        # model: deepseek-r1:14b
-        model: qwen3:14b
-
-      # 彦龙大模型
-      # base-url: http://10.244.22.55:11434
-      # chat:
-      #   model: deepseek-r1:7b
-
-      # 部门大模型
-      # base-url: http://10.244.51.171:8000
-      # chat:
-      #   model: deepseek-v3_Q4:latest
-
+        model: xxx
     # 基于openai去拉取模型
     openai:
-       # 华为云提供
-       # base-url: https://maas-cn-southwest-2.modelarts-maas.com/v1/chat/completions
-       # api-key: NKyh3oxr1YzyycvaiV7N8qx1wXJr36VvVpAUsah6LYtiMsMLbNRgewCy15EDXSRe13sFIYAisWzvScACzxnRmQ
-       # chat:
-       #   options:
-       #     model: DeepSeek-R1
-      # 华为云提供
-       base-url: https://chatapi.littlewheat.com
-       api-key: sk-YiB76FYEBysWcTUw69FEGVfwqMzf1iKMILvobZg3ALVHFl63
+       base-url: xxx
+       api-key: xxx
        chat:
          options:
-           model: grok-3
-      # Grok
-#      base-url: https://neolovec.com/v1/chat/completions
-#      api-key: linux.do
-#      chat:
-#        options:
-#          model: grok-3
-        # temperature: 0.7
-      #      embedding:
-      #        options:
-      #          model: bge-m3:567m
-      #          dimensions: 1024
-#      base-url: http://10.244.51.171:8000
-#      api-key: ollama
-#      chat:
-#        options:
-#          model: deepseek-v3_Q4:latest
-#        # temperature: 0.7
-#      embedding:
-#        options:
-#          model: bge-m3:567m
-#          dimensions: 1024
-#    openai:
+           model: xxx
+       embedding:
+         options:
+           model:
+           dimensions:
+
 
 datasource:
   localhost:
@@ -75,14 +38,23 @@ datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 # 大模型多数据源配置
+# 三点五接口： gpt-3.5-turbo
+# 四接口/高级：（可用4.0、Claude、Deepseek）
+# 4.0系列：gpt-4o(推荐),gpt-image-1(画图),gpt-4.1(新),gpt-4.1-mini(新),gpt-4.1-nano(新),gpt-4,gpt-4o-image(画图),gpt-4o-mini,o3-mini,tts-1,whisper-1,gpt-3.5-turbo
+# deepseek系列：deepseek-v3-0324,deepseek-r1(思考),deepseek-v3,deepseek-r1-searching(联网),deepseek-reasoner,deepseek-chat
+# Claude系列：claude-3-7-sonnet-20250219,claude-3-7-sonnet-thinking（思考),claude-3-5-sonnet-20241022
+# 向量text系列：text-embedding-ada-002（推荐）,text-embedding-3-large,text-embedding-3-small
+# grok3系列：grok-3,grok-3-reasoner(思考),grok-3-deepsearch
+# gemini系列：gemini-2.5-pro-exp-03-25,gemini-2.0-flash-exp,gemini-2.0-flash-thinking-exp-121
+
 ai:
   openai:
-    grok3:
+    grok-3:
       base-url: https://chatapi.littlewheat.com
       api-key: sk-YiB76FYEBysWcTUw69FEGVfwqMzf1iKMILvobZg3ALVHFl63
       model: grok-3
       temperature: 0.7
-    gpt4:
+    gpt-4o:
       base-url: https://chatapi.littlewheat.com
       api-key: sk-YiB76FYEBysWcTUw69FEGVfwqMzf1iKMILvobZg3ALVHFl63
       model: gpt-4o
@@ -97,3 +69,11 @@ ai:
       base-url: http://localhost:11434
       model: qwen3:14b
       temperature: 0.5
+    deepseek-v3_Q4:latest:
+      base-url: http://10.244.51.171:8000
+      model: deepseek-v3_Q4:latest
+      temperature: 0.7
+    deepseek-r1:7b:
+      base-url: http://10.244.22.55:11434
+      model: deepseek-r1:7b
+      temperature: 0.9

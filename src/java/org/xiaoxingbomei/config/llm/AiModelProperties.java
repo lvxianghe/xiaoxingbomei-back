@@ -6,6 +6,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 大模型的属性 从配置项中读取
+ */
 @ConfigurationProperties(prefix = "ai")
 @Data
 public class AiModelProperties {

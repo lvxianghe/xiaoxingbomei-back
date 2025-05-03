@@ -26,3 +26,24 @@ create table llm_functioncalling_programmer
     experience      varchar(64)    not null comment '程序员经验（年）'
 )
     comment '大模型智能客服-程序员表';
+
+create table llm_system_prompt
+(
+    prompt_id varchar(64) primary key comment '主键',
+    prompt_name             varchar(40)    not null comment '主键ID',
+    prompt_type             varchar(10)    not null comment '提示词名字',
+    prompt_description      varchar(100)    not null comment '提示词类型',
+    prompt_tag              varchar(100)    not null comment '提示词描述',
+    prompt_content          varchar(2000)    not null comment '提示词标签（A,B,C）',
+    status                 varchar(5)    not null comment '提示词内容'
+)
+    comment '大模型-系统提示词表';
+
+create table llm_model_resource
+(
+    model_provider         varchar(20)    not null comment '模型提供者（ollama/openai）',
+    model_name             varchar(20)    not null comment '大模型名称',
+    model_description      varchar(100)    not null comment '大模型描述',
+    model_tag              varchar(100)    not null comment '提示词标签（A,B,C）'
+)
+    comment '大模型-模型来源表';

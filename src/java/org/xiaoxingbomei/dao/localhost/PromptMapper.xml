@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.xiaoxingbomei.dao.localhost.PromptMapper" >
+
+    <!-- 查询所有提示词 -->
+    <select id="getAllPrompts" resultType="org.xiaoxingbomei.vo.LlmSystemPrompt">
+        SELECT 
+            prompt_id as promptId,
+            prompt_name as promptName,
+            prompt_type as promptType,
+            prompt_description as promptDescription,
+            prompt_tag as promptTag,
+            prompt_content as promptContent,
+            status
+        FROM llm_system_prompt
+        WHERE status = '1'
+    </select>
+    
+    <!-- 根据ID查询提示词 -->
+    <select id="getPromptById" resultType="org.xiaoxingbomei.vo.LlmSystemPrompt">
+        SELECT 
+            prompt_id as promptId,
+            prompt_name as promptName,
+            prompt_type as promptType,
+            prompt_description as promptDescription,
+            prompt_tag as promptTag,
+            prompt_content as promptContent,
+            status
+        FROM llm_system_prompt
+        WHERE prompt_id = #{promptId}
+        AND status = '1'
+    </select>
+    
+    <!-- 添加提示词 -->
+    <insert id="addPrompt" parameterType="org.xiaoxingbomei.vo.LlmSystemPrompt">
+        INSERT INTO llm_system_prompt (
+            prompt_id,
+            prompt_name,
+            prompt_type,
+            prompt_description,
+            prompt_tag,
+            prompt_content,
+            status
+        ) VALUES (
+            #{promptId},
+            #{promptName},
+            #{promptType},
+            #{promptDescription},
+            #{promptTag},
+            #{promptContent},
+            #{status}
+        )
+    </insert>
+    
+    <!-- 删除提示词（逻辑删除，将状态改为0） -->
+    <update id="deletePrompt">
+        UPDATE llm_system_prompt
+        SET status = '0'
+        WHERE prompt_id = #{promptId}
+    </update>
+
+</mapper>

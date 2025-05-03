@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.xiaoxingbomei.dao.localhost.ModelMapper" >
+
+    <!-- 获取所有模型 -->
+    <select id="getAllModels" resultType="org.xiaoxingbomei.vo.LlmModel">
+        SELECT 
+            model_provider as modelProvider,
+            model_name as modelName,
+            model_description as modelDescription,
+            model_tag as modelTag
+        FROM llm_model_resource
+    </select>
+    
+    <!-- 根据提供者获取模型 -->
+    <select id="getModelsByProvider" resultType="org.xiaoxingbomei.vo.LlmModel">
+        SELECT
+            model_provider,
+            model_name,
+            model_description,
+            model_tag
+        FROM llm_model_resource
+        WHERE modelProvider = #{provider}
+    </select>
+    
+    <!-- 添加模型 -->
+    <insert id="addModel" parameterType="org.xiaoxingbomei.vo.LlmModel">
+        INSERT INTO llm_model_resource (
+            model_provider,
+            model_name,
+            model_description,
+            model_tag
+        ) VALUES (
+            #{modelProvider},
+            #{modelName},
+            #{modelDescription},
+            #{modelTag}
+        )
+    </insert>
+    
+    <!-- 更新模型 -->
+    <update id="updateModel" parameterType="org.xiaoxingbomei.vo.LlmModel">
+        UPDATE llm_model_resource
+        SET 
+            model_description = #{modelDescription},
+            model_tag = #{modelTag}
+        WHERE 
+            model_provider = #{modelProvider}
+            AND model_name = #{modelName}
+    </update>
+    
+    <!-- 删除模型 -->
+    <delete id="deleteModel">
+        DELETE FROM llm_model_resource
+        WHERE 
+            model_provider = #{modelProvider}
+            AND model_name = #{modelName}
+    </delete>
+
+</mapper> 

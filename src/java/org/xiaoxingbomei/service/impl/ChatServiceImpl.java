@@ -1,57 +1,44 @@
 package org.xiaoxingbomei.service.impl;
 
-import com.fasterxml.jackson.core.type.TypeReference;
+
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor;
+import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
+import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
+import org.springframework.ai.chat.client.advisor.api.Advisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.xiaoxingbomei.constant.SystemPromptConstant;
 import org.xiaoxingbomei.dao.localhost.ChatMapper;
 import org.xiaoxingbomei.entity.response.ResponseEntity;
 import org.xiaoxingbomei.factory.ChatClientFactory;
 import org.xiaoxingbomei.service.ChatService;
+import org.xiaoxingbomei.utils.ChatClient_Utils;
 import org.xiaoxingbomei.utils.Request_Utils;
 import org.xiaoxingbomei.vo.LlmChatHistory;
 import org.xiaoxingbomei.vo.LlmChatHistoryList;
 import reactor.core.publisher.Flux;
 
-import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 import java.util.stream.Collectors;
 
-import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_CONVERSATION_ID_KEY;
 
 @Service
 @Slf4j
 public class ChatServiceImpl implements ChatService
 {
-    @Autowired
-    @Qualifier("ollamaChatClient")
-    private ChatClient ollamaChatClient;
-
-    @Autowired
-    @Qualifier("openAiChatClient")
-    private ChatClient openAiChatClient;
-
-    @Autowired
-    @Qualifier("serviceChatClient")
-    private ChatClient serviceChatClient;
 
     @Autowired
     private ChatClientFactory chatClientFactory;
-
-    @Autowired
-    @Qualifier("openAiGrokClient")
-    private ChatClient openAiGrokClient;
 
     @Autowired
     private ChatMapper chatMapper;
@@ -59,26 +46,40 @@ public class ChatServiceImpl implements ChatService
     @Autowired
     ChatMemory chatMemory;
 
-    private Map<String,List<String>> chatHistory;
 
     // ===================================================================
+
+
+    @Override
+    public Flux<String> chat(String prompt, String chatId, String isStream,String modelProvider,String modelName,String systemPrompt)
+    {
+        List<Advisor> advisors = List.of
+                (
+                new MessageChatMemoryAdvisor(chatMemory),
+                new SimpleLoggerAdvisor()
+                );
+        ChatClient chatClient = chatClientFactory.getClient(modelProvider, modelName);
+        Boolean isStreamBoolean = Boolean.valueOf(isStream);
+        
+        // 使用普通的chat方法，因为ProgrammerTools已经在配置阶段添加
+        log.info("使用普通chat方法，ProgrammerTools已在配置中添加");
+        return isStreamBoolean
+                ? (Flux<String>) ChatClient_Utils.chatWithDefaultSystem(chatClient, chatId, prompt, systemPrompt, advisors, true)
+                : Flux.just((String) ChatClient_Utils.chatWithDefaultSystem(chatClient, chatId, prompt, systemPrompt, advisors, false));
+    }
 
     @Override
     public ResponseEntity chat_for_string(String prompt)
     {
         log.info("chat_for_string");
-        // 1、获取前端参数
-//        String prompt = Request_Utils.getParam(paramString, "prompt");
 
-        // 2、普通模式
-//        String resultContent = ollamaChatClient
-        String resultContent = openAiChatClient
+        ChatClient chatClient = chatClientFactory.getClient("ollama", "qwen3:14b");
+        String resultContent = chatClient
                 .prompt()
                 .user(prompt)
                 .call()
                 .content();
 
-        //  3、封装返回体
         HashMap<String, Object> resultMap = new HashMap<>();
         resultMap.put("resultContent", resultContent);
         resultMap.put("prompt", prompt);
@@ -87,12 +88,8 @@ public class ChatServiceImpl implements ChatService
     @Override
     public Flux<String> chat_for_stream(String prompt,String chatId)
     {
-
-
         log.info("chat_for_stream with prompt: {}", prompt);
         // 使用OpenAI进行流式响应
-//        Flux<String> resultContent = ollamaChatClient
-//        Flux<String> resultContent = openAiChatClient
         ChatClient chatClient = chatClientFactory.getClient("ollama", "qwen3");
         Flux<String> resultContent = chatClient
                 .prompt()
@@ -251,20 +248,22 @@ public class ChatServiceImpl implements ChatService
     @Override
     public Flux<String> chat_for_game(String prompt, String chatId)
     {
-        return ollamaChatClient.prompt()
-                .user(prompt)
-                .advisors(a -> a.param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId))
-                .stream()
-                .content();
+        ChatClient chatClient = chatClientFactory.getClient("ollama", "qwen3:14b");
+        // 使用普通的chat方法，因为ProgrammerTools已经在配置阶段添加
+        List<Advisor> advisors = List.of(new SimpleLoggerAdvisor());
+        String systemPrompt = SystemPromptConstant.GAME_SYSTEM_PROMPT;
+        log.info("chat_for_game: 使用普通chat方法，ProgrammerTools已在配置中添加");
+        return (Flux<String>) ChatClient_Utils.chat(chatClient, chatId, prompt, systemPrompt, advisors, true);
     }
 
     @Override
     public String chat_for_service(String prompt, String chatId)
     {
-        return serviceChatClient.prompt()
-                .user(prompt)
-                .advisors(a -> a.param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId))
-                .call()
-                .content();
+        ChatClient chatClient = chatClientFactory.getClient("ollama", "qwen3:14b");
+        // 使用普通的chat方法，因为ProgrammerTools已经在配置阶段添加
+        List<Advisor> advisors = List.of(new SimpleLoggerAdvisor());
+        String systemPrompt = SystemPromptConstant.SERVICE_SYSTEM_PROMPT;
+        log.info("chat_for_service: 使用普通chat方法，ProgrammerTools已在配置中添加");
+        return (String) ChatClient_Utils.chat(chatClient, chatId, prompt, systemPrompt, advisors, false);
     }
 }
