@@ -1,7 +1,9 @@
 package org.xiaoxingbomei.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.xiaoxingbomei.constant.ApiConstant;
 import org.xiaoxingbomei.entity.response.ResponseEntity;
 import org.xiaoxingbomei.service.ChatService;
@@ -36,7 +38,7 @@ public class AiController
             @RequestParam(value = "isStream") String isStream,
             @RequestParam(value = "modelName") String modelName,
             @RequestParam(value = "modelProvider") String modelProvider,
-            @RequestParam(value = "systemPrompt") String systemPrompt
+            @RequestParam(value = "systemPrompt",required = false) String systemPrompt
             )
     {
 
@@ -238,6 +240,22 @@ public class AiController
     {
         ResponseEntity ret = llmModelService.deleteModel(paramString);
         
+        return ret;
+    }
+
+    @RequestMapping(value = ApiConstant.File.uploadFile, method = RequestMethod.POST)
+    public ResponseEntity uploadFile(@RequestParam("chatId") String chatId, @RequestParam("file") MultipartFile file)
+    {
+        ResponseEntity ret = llmModelService.uploadFile(chatId,file);
+
+        return ret;
+    }
+
+    @RequestMapping(value = ApiConstant.File.downloadFile, method = RequestMethod.POST)
+    public org.springframework.http.ResponseEntity<Resource> downloadFile(@RequestBody String paramString)
+    {
+        org.springframework.http.ResponseEntity<Resource> ret = llmModelService.downloadFile(paramString);
+
         return ret;
     }
 

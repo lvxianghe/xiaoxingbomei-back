@@ -6,10 +6,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
+import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.client.advisor.api.Advisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.messages.Message;
+import org.springframework.ai.vectorstore.SearchRequest;
+import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,6 +47,8 @@ public class ChatServiceImpl implements ChatService
     @Autowired
     ChatMemory chatMemory;
 
+    @Autowired
+    private VectorStore vectorStore;
 
     // ===================================================================
 
@@ -54,16 +59,22 @@ public class ChatServiceImpl implements ChatService
         List<Advisor> advisors = List.of
                 (
                 new MessageChatMemoryAdvisor(chatMemory),
-                new SimpleLoggerAdvisor()
+                new SimpleLoggerAdvisor(),
+                new QuestionAnswerAdvisor(
+                        vectorStore,
+                        SearchRequest.builder()
+                                .similarityThreshold(0.6)
+                                .topK(2)
+                                .build()
+                )
                 );
         ChatClient chatClient = chatClientFactory.getClient(modelProvider, modelName);
         Boolean isStreamBoolean = Boolean.valueOf(isStream);
-        
-        // 使用普通的chat方法，因为ProgrammerTools已经在配置阶段添加
-        log.info("使用普通chat方法，ProgrammerTools已在配置中添加");
+
+        // 如果是普通对话，路由是否流式响应
         return isStreamBoolean
-                ? (Flux<String>) ChatClient_Utils.chatWithDefaultSystem(chatClient, chatId, prompt, systemPrompt, advisors, true)
-                : Flux.just((String) ChatClient_Utils.chatWithDefaultSystem(chatClient, chatId, prompt, systemPrompt, advisors, false));
+                ? (Flux<String>) ChatClient_Utils.chatWithSystemPrompt(chatClient, chatId, prompt, systemPrompt, advisors, true)
+                : Flux.just((String) ChatClient_Utils.chatWithSystemPrompt(chatClient, chatId, prompt, systemPrompt, advisors, false));
     }
 
     @Override

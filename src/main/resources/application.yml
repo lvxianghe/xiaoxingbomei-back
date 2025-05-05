@@ -10,6 +10,11 @@ spring:
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
+  # 添加文件上传大小限制配置
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
 
   ai:
     # 基于ollama去拉取模型

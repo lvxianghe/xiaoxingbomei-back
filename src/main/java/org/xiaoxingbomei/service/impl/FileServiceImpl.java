@@ -35,61 +35,97 @@ public class FileServiceImpl implements FileService
     @Override
     public boolean saveFileWithChatId(String chatId, Resource resource)
     {
-        // 1.保存到本地磁盘
-        String filename = resource.getFilename();
-        File target = new File(Objects.requireNonNull(filename));
-        if (!target.exists())
-        {
-            try
-            {
-                Files.copy(resource.getInputStream(), target.toPath());
-            } catch (IOException e) {
-                log.error("Failed to save PDF resource.", e);
+        try {
+            // 1.获取文件名
+            String filename = resource.getFilename();
+            if (filename == null || filename.isEmpty()) {
+                log.error("保存文件失败：文件名为空");
                 return false;
             }
+            
+            // 2.创建目标文件
+            File target = new File(Objects.requireNonNull(filename));
+            
+            // 3.保存文件内容
+            log.info("准备保存文件：{}，资源大小：{} 字节", filename, resource.contentLength());
+            
+            // 使用Files.copy代替低级IO操作，确保文件内容正确复制
+            java.nio.file.Files.copy(
+                resource.getInputStream(),
+                target.toPath(),
+                java.nio.file.StandardCopyOption.REPLACE_EXISTING  // 如果文件已存在则替换
+            );
+            
+            // 检查保存后的文件大小
+            if (target.length() == 0) {
+                log.error("文件保存后大小为0，可能未成功保存内容：{}", filename);
+                return false;
+            }
+            
+            log.info("文件保存成功：{}，大小：{} 字节", filename, target.length());
+            
+            // 4.保存映射关系
+            chatFiles.put(chatId, filename);
+            log.info("保存chatId与文件的映射关系：{} -> {}", chatId, filename);
+            
+            return true;
+        } catch (Exception e) {
+            log.error("保存文件失败", e);
+            return false;
         }
-        // 2.保存映射关系
-        chatFiles.put(chatId, filename);
-        return true;
     }
 
     @Override
     public Resource getFileByChatId(String chatId)
     {
-        return new FileSystemResource(chatFiles.getProperty(chatId));
+        if (chatId == null || chatId.isEmpty()) {
+            log.error("获取文件失败：chatId为空");
+            return null;
+        }
+        
+        String filename = chatFiles.getProperty(chatId);
+        if (filename == null || filename.isEmpty()) {
+            log.error("获取文件失败：chatId={}没有对应的文件", chatId);
+            return null;
+        }
+        
+        log.info("获取文件：chatId={}，filename={}", chatId, filename);
+        FileSystemResource resource = new FileSystemResource(filename);
+
+        return resource;
     }
 
-    @PostConstruct
-    private void init()
-    {
-        FileSystemResource pdfResource = new FileSystemResource("chat-pdf.properties");
-        if (pdfResource.exists())
-        {
-            try
-            {
-                chatFiles.load(new BufferedReader(new InputStreamReader(pdfResource.getInputStream(), StandardCharsets.UTF_8)));
-            } catch (IOException e)
-            {
-                throw new RuntimeException(e);
-            }
-        }
-        FileSystemResource vectorResource = new FileSystemResource("chat-pdf.json");
-        if (vectorResource.exists())
-        {
-            SimpleVectorStore simpleVectorStore = (SimpleVectorStore) vectorStore;
-            simpleVectorStore.load(vectorResource);
-        }
-    }
-
-    @PreDestroy
-    private void persistent() {
-        try {
-            chatFiles.store(new FileWriter("chat-pdf.properties"), LocalDateTime.now().toString());
-            SimpleVectorStore simpleVectorStore = (SimpleVectorStore) vectorStore;
-            simpleVectorStore.save(new File("chat-pdf.json"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    @PostConstruct
+//    private void init()
+//    {
+//        FileSystemResource pdfResource = new FileSystemResource("src/Files/BAK/chat-pdf.properties");
+//        if (pdfResource.exists())
+//        {
+//            try
+//            {
+//                chatFiles.load(new BufferedReader(new InputStreamReader(pdfResource.getInputStream(), StandardCharsets.UTF_8)));
+//            } catch (IOException e)
+//            {
+//                throw new RuntimeException(e);
+//            }
+//        }
+//        FileSystemResource vectorResource = new FileSystemResource("./src/Files/BAK/chat-pdf.json");
+//        if (vectorResource.exists())
+//        {
+//            SimpleVectorStore simpleVectorStore = (SimpleVectorStore) vectorStore;
+//            simpleVectorStore.load(vectorResource);
+//        }
+//    }
+//
+//    @PreDestroy
+//    private void persistent() {
+//        try {
+//            chatFiles.store(new FileWriter("./src/Files/BAK/chat-pdf.properties"), LocalDateTime.now().toString());
+//            SimpleVectorStore simpleVectorStore = (SimpleVectorStore) vectorStore;
+//            simpleVectorStore.save(new File("./src/Files/BAK/chat-pdf.json"));
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
 }

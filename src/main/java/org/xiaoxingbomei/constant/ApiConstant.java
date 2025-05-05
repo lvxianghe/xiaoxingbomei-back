@@ -45,9 +45,10 @@ public class ApiConstant
         public static final String deleteModel        = "/ai/model/deleteModel";            // 删除模型
     }
 
-    public class Emb
+    public class File
     {
-        public static final String test      = "/ai/emb/test";
+        public static final String uploadFile         = "/ai/file/uploadFile";
+        public static final String downloadFile       = "/ai/file/downloadFile";
     }
 
 }

@@ -1,5 +1,9 @@
 package org.xiaoxingbomei.service;
 
+import org.springframework.core.io.Resource;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.xiaoxingbomei.entity.response.ResponseEntity;
 import org.xiaoxingbomei.vo.LlmModel;
 
@@ -42,5 +46,8 @@ public interface LlmModelService
      * @return 删除结果
      */
     ResponseEntity deleteModel(String paramString);
+
+    ResponseEntity uploadFile( String chatId, MultipartFile file);
+    org.springframework.http.ResponseEntity<Resource> downloadFile(String paramString);
 
 }
