@@ -42,6 +42,7 @@
 
 
 ### 智能客服
+![5fa2c08e689bd28753072be52b38114](https://github.com/user-attachments/assets/287a3a20-cc95-4a4f-8b75-49198bcc00a6)
 
 
 ### 哄哄模拟器
@@ -49,6 +50,7 @@
 
 
 ### ChatPDF
+![d1acac1806518fb2ba668d888fd6b66](https://github.com/user-attachments/assets/ddf2666c-2af3-405a-9ba0-6a5ec9c73173)
 
 
 
