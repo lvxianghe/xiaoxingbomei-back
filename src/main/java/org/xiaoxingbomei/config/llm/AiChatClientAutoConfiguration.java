@@ -66,7 +66,7 @@ public class AiChatClientAutoConfiguration
             log.info("创建OpenAI ChatClient: {}, 添加ProgrammerTools支持", name);
             map.put(name, ChatClient.builder(model)
                     .defaultAdvisors(new SimpleLoggerAdvisor(), new MessageChatMemoryAdvisor(chatMemory))
-                    .defaultTools(programmerTools)
+//                    .defaultTools(programmerTools)
                     .build());
         });
         return map;
@@ -93,7 +93,7 @@ public class AiChatClientAutoConfiguration
             log.info("创建Ollama ChatClient: {}, 添加ProgrammerTools支持", name);
             map.put(name, ChatClient.builder(model)
                     .defaultAdvisors(new SimpleLoggerAdvisor(), new MessageChatMemoryAdvisor(chatMemory))
-                    .defaultTools(programmerTools)
+//                    .defaultTools(programmerTools)
                     .build());
         });
         return map;

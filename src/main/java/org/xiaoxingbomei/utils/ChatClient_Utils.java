@@ -217,8 +217,8 @@ public class ChatClient_Utils
             
             // 创建ChatClient.Builder对象，添加ProgrammerTools
             ChatClient.Builder builder = ChatClient.builder(model)
-                    .defaultSystem(systemPrompt)
-                    .defaultTools(instance.programmerTools);
+                    .defaultSystem(systemPrompt);
+//                    .defaultTools(instance.programmerTools);
             
             // 如果成功获取到原始默认advisors，则添加到新的ChatClient中
             if (originalDefaultAdvisors != null && !originalDefaultAdvisors.isEmpty())

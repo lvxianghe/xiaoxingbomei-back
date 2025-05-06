@@ -100,34 +100,9 @@ public class ChatServiceImpl implements ChatService
         log.info("chat_for_stream with prompt: {}", prompt);
         // 使用OpenAI进行流式响应
         ChatClient chatClient = chatClientFactory.getClient("ollama", "qwen3");
-        Flux<String> resultContent = chatClient
-                .prompt()
-                .user(prompt)
-                .advisors(a -> a.param(AbstractChatMemoryAdvisor.CHAT_MEMORY_CONVERSATION_ID_KEY, chatId))
-                .stream()
-                .content();
-
-        // 持久化对话信息
-        List<Message> messages = chatMemory.get(chatId, Integer.MAX_VALUE);
-
-        List<LlmChatHistory> llmChatHistorys = new ArrayList<>(); // 存放全部的聊天记录
-
-
-        // 增加新的聊天记录
-        for (Message message : messages)
-        {
-            llmChatHistorys.add(new LlmChatHistory(message,chatId));
-        }
-
-        if (!llmChatHistorys.isEmpty())
-        {
-            // 先把所有的历史记录删除 再插入新的记录
-            chatMapper.deleteChatHistory(chatId);
-            chatMapper.insertChatHistory(llmChatHistorys);
-        }
-
-        // 返回响应
-        return resultContent;
+        
+        // 使用ChatClient_Utils进行调用，它会处理持久化
+        return (Flux<String>) ChatClient_Utils.chat(chatClient, chatId, prompt, null, null, true);
     }
 
     @Override

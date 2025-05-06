@@ -43,11 +43,18 @@ public class FileServiceImpl implements FileService
                 return false;
             }
             
-            // 2.创建目标文件
-            File target = new File(Objects.requireNonNull(filename));
+            // 2.创建保存目录
+            File saveDir = new File("./uploads");
+            if (!saveDir.exists()) {
+                saveDir.mkdirs();
+            }
             
-            // 3.保存文件内容
-            log.info("准备保存文件：{}，资源大小：{} 字节", filename, resource.contentLength());
+            // 3.构建目标文件的完整路径
+            File target = new File(saveDir, filename);
+            String fullPath = target.getAbsolutePath();
+            
+            // 4.保存文件内容
+            log.info("准备保存文件：{}，资源大小：{} 字节", fullPath, resource.contentLength());
             
             // 使用Files.copy代替低级IO操作，确保文件内容正确复制
             java.nio.file.Files.copy(
@@ -56,17 +63,17 @@ public class FileServiceImpl implements FileService
                 java.nio.file.StandardCopyOption.REPLACE_EXISTING  // 如果文件已存在则替换
             );
             
-            // 检查保存后的文件大小
+            // 5.检查保存后的文件大小
             if (target.length() == 0) {
-                log.error("文件保存后大小为0，可能未成功保存内容：{}", filename);
+                log.error("文件保存后大小为0，可能未成功保存内容：{}", fullPath);
                 return false;
             }
             
-            log.info("文件保存成功：{}，大小：{} 字节", filename, target.length());
+            log.info("文件保存成功：{}，大小：{} 字节", fullPath, target.length());
             
-            // 4.保存映射关系
-            chatFiles.put(chatId, filename);
-            log.info("保存chatId与文件的映射关系：{} -> {}", chatId, filename);
+            // 6.保存映射关系 - 保存完整路径
+            chatFiles.put(chatId, fullPath);
+            log.info("保存chatId与文件的映射关系：{} -> {}", chatId, fullPath);
             
             return true;
         } catch (Exception e) {
@@ -83,16 +90,29 @@ public class FileServiceImpl implements FileService
             return null;
         }
         
-        String filename = chatFiles.getProperty(chatId);
-        if (filename == null || filename.isEmpty()) {
+        String filePath = chatFiles.getProperty(chatId);
+        if (filePath == null || filePath.isEmpty()) {
             log.error("获取文件失败：chatId={}没有对应的文件", chatId);
             return null;
         }
         
-        log.info("获取文件：chatId={}，filename={}", chatId, filename);
-        FileSystemResource resource = new FileSystemResource(filename);
-
-        return resource;
+        log.info("获取文件：chatId={}，filePath={}", chatId, filePath);
+        
+        // 使用绝对路径创建FileSystemResource
+        File file = new File(filePath);
+        if (!file.exists() || !file.isFile()) {
+            log.error("文件不存在或不是普通文件：{}", filePath);
+            return null;
+        }
+        
+        // 检查文件大小
+        if (file.length() == 0) {
+            log.warn("文件大小为0：{}", filePath);
+        } else {
+            log.info("文件大小：{} 字节", file.length());
+        }
+        
+        return new FileSystemResource(file);
     }
 
 //    @PostConstruct
