@@ -1,0 +1,111 @@
+# spring 配置
+server:
+  port: 28928
+  servlet:
+    context-path: /
+  tomcat:
+    # 解决请求头过大问题
+    max-http-header-size: 8MB
+    max-http-form-post-size: 100MB
+    max-swallow-size: -1
+
+spring:
+  application:
+    name: ai
+  main:
+    allow-bean-definition-overriding: true
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 100MB
+  ai:
+    chat:
+      client:
+        enabled: false # false的情况下禁止自动装配，就可以创建多个ChatClient了
+    # OpenAI配置 - 使用text-embedding-3-large嵌入模型
+    openai:
+      api-key: sk-YiB76FYEBysWcTUw69FEGVfwqMzf1iKMILvobZg3ALVHFl63
+      base-url: https://chatapi.littlewheat.com
+      embedding:
+        options:
+          model: text-embedding-3-large
+    ollama:
+      base-url: "http://disabled-placeholder:11434"
+    # MCP Server 配置
+    mcp:
+      server:
+        enabled: true
+        name: "xiaoxingbomei-weather-server"
+        version: "1.0.0"
+        description: "小星星博美天气服务MCP Server"
+        # 添加 SSE 端点配置
+        sse-endpoint: "/sse"
+        sse-message-endpoint: "/mcp/message"
+        tools:
+          enabled: true
+
+ai:
+  openai:
+    grok-3:
+      base-url: https://chatapi.littlewheat.com
+      api-key: sk-YiB76FYEBysWcTUw69FEGVfwqMzf1iKMILvobZg3ALVHFl63
+      model: grok-3
+      temperature: 0.7
+      embeddingModelName: text-embedding-v3
+      embeddingDimensions: 1024
+      modelDescription: "Grok-3是xAI开发的最新一代大语言模型，具有强大的推理和创作能力"
+      modelTag: "推理,创作,多模态"
+    gpt-4o:
+      base-url: https://chatapi.littlewheat.com
+      api-key: sk-YiB76FYEBysWcTUw69FEGVfwqMzf1iKMILvobZg3ALVHFl63
+      model: gpt-4o
+      temperature: 0.5
+      embeddingModelName: text-embedding-v3
+      embeddingDimensions: 1024
+      modelDescription: "OpenAI GPT-4o是最新的多模态大语言模型，支持文本、图像和音频处理"
+      modelTag: "多模态,文本生成,图像理解,音频处理"
+
+  ollama:
+    deepseek:
+      base-url: http://localhost:11434
+      model: deepseek-r1:14B
+      temperature: 0.7
+      modelDescription: "DeepSeek-R1是一个专注于推理的大语言模型，在数学和逻辑推理方面表现优异"
+      modelTag: "推理,数学,逻辑,编程"
+    qwen3:
+      base-url: http://localhost:11434
+      model: qwen3:14b
+      temperature: 0.5
+      modelDescription: "通义千问3是阿里云开发的大语言模型，在中文理解和生成方面表现出色"
+      modelTag: "中文,对话,文本生成,知识问答"
+    deepseek-v3_Q4:latest:
+      base-url: http://10.244.51.171:8000
+      model: deepseek-v3_Q4:latest
+      temperature: 0.7
+      modelDescription: "DeepSeek-V3量化版本，在保持性能的同时降低了资源消耗"
+      modelTag: "量化,高效,编程,推理"
+    deepseek-r1:7b:
+      base-url: http://10.244.22.55:11434
+      model: deepseek-r1:7b
+      temperature: 0.9
+      modelDescription: "DeepSeek-R1轻量版，适合资源受限环境下的推理任务"
+      modelTag: "轻量,推理,数学,编程"
+
+
+datasource:
+  localhost:
+    jdbc-url: jdbc:mysql://localhost:3306/ysx
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+logging:
+  level:
+    org:
+      springframework:
+        ai: debug  # 启用Spring AI的DEBUG日志
+      xiaoxingbomei:
+        config:
+          tools: debug  # 启用我们工具类的DEBUG日志
+    root: info
+
+

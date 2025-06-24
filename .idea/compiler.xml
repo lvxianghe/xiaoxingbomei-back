@@ -2,16 +2,25 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="server-ai" />
+        <module name="llm-common" />
+        <module name="llm-client" />
+        <module name="llm-server" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="server-ai" target="17" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="llm-client" options="-parameters" />
+      <module name="llm-common" options="-parameters" />
+      <module name="llm-server" options="-parameters" />
       <module name="server-ai" options="-parameters" />
     </option>
   </component>

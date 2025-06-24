@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="ERROR" monitorinterval="30">
+
+    <!-- Properties: 全局属性 -->
+    <Properties>
+        <Property name="LOG_DIR">./logs/llm-client/</Property>
+        <property name="FILE_NAME_DEFAULT">default.log</property>
+        <property name="FILE_NAME_INFO">info.log</property>
+        <property name="FILE_NAME_ERROR">error.log</property>
+    </Properties>
+
+
+    <!-- Appenders: 日志输出的目的地 -->
+        <!-- Console: 向控制台输出日志 -->
+        <!-- File: 将日志记录到文件中 -->
+        <!-- RollingFile: 将日志记录到指定大小的文件中，并支持文件滚动 -->
+        <!-- Socket: 将日志发送到远程Socket服务器 -->
+        <!-- Kafka: 将日志发送到kafka消息队列 -->
+        <!-- Redis: 将日志发送到redis服务器 -->
+        <!-- Jdbc: 将日志记录到数据库中 -->
+    <Appenders>
+
+        <!-- 控制台输出 -->
+            <!-- name: 标签名称 -->
+            <!-- target: 标签输出目标，system.out/system.err，默认system.out -->
+            <!-- follow: 控制台是否跟随日志进行滚动，默认为false -->
+            <!-- immediateFlush: 输出是否立即刷新，默认为true -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <!-- console子标签-PatternLayout:自定义输出的格式 -->
+            <!-- console子标签-ThresholdFilter:指定哪些日志级别应该被输出或被拒绝  -->
+                <!--level: 匹配可用的日志级别 -->
+                <!--onMatch: 匹配或高于时动作，ACCEPT/DENY/NEUTRAL，默认NEUTRAL -->
+                <!--onMisMatch: 低于时动作，ACCEPT/DENY/NEUTRAL，默认DENY -->
+            <!-- console子标签-RegexFilter: 使用正则表达式来计算哪些日志消息应该被过滤 -->
+            <PatternLayout pattern="[%-level] [%highlight{%d{HH:mm:ss.SSS}] [%t] [%logger{36}] - %msg%n}{FATAL=red, ERROR=red, WARN=yellow, INFO=green, DEBUG=cyan, TRACE=blue}"/>
+        </Console>
+
+        <!-- default.log -->
+        <RollingFile name="RollingDefaultFile"
+                     fileName="${LOG_DIR}/default.log"
+                     filePattern="${LOG_DIR}/info-%d{yyyy-MM-dd}-%i.log"><!--如想自动压缩滚动文件，可以写成 .log.gz 就自动生成压缩文件了--><!-- 每次大小超过size或到时间间隔，则这日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档-->
+            <PatternLayout pattern="[%-level] [%highlight{%d{HH:mm:ss.SSS}] [%t] [%logger{36}] - %msg%n}{FATAL=red, ERROR=red, WARN=yellow, INFO=green, DEBUG=cyan, TRACE=blue}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+                <SizeBasedTriggeringPolicy size="100 MB"/><!--指定当文件体积大于size指定的值时，触发Rolling-->
+            </Policies>
+            <DefaultRolloverStrategy max="20"/><!-- 表示日志文件最大保留数 -->   <!-- DefaultRolloverStrategy属性如不设置，则默认为最多同一文件夹下7个文件，这里设置了20 -->
+        </RollingFile>
+
+        <!-- info.log -->
+        <!-- <RollingFile name="RollingInfoFile"-->
+        <!--              fileName="${LOG_DIR}/info.log"-->
+        <!--              filePattern="${LOG_DIR}/info-%d{yyyy-MM-dd}-%i.log">&lt;!&ndash;如想自动压缩滚动文件，可以写成 .log.gz 就自动生成压缩文件了&ndash;&gt;&lt;!&ndash; 每次大小超过size或到时间间隔，则这日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档&ndash;&gt;-->
+        <!--     <PatternLayout pattern="[%-level] [%highlight{%d{HH:mm:ss.SSS}] [%t] [%logger{36}] - %msg%n}{FATAL=red, ERROR=red, WARN=yellow, INFO=green, DEBUG=cyan, TRACE=blue}"/>-->
+        <!--     <Filters>-->
+        <!--         <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>-->
+        <!--     </Filters>-->
+        <!--     <Policies>-->
+        <!--         <TimeBasedTriggeringPolicy interval="1" modulate="true" />-->
+        <!--         <SizeBasedTriggeringPolicy size="100 MB"/>&lt;!&ndash;指定当文件体积大于size指定的值时，触发Rolling&ndash;&gt;-->
+        <!--     </Policies>-->
+        <!--     <DefaultRolloverStrategy max="20"/>&lt;!&ndash; 表示日志文件最大保留数 &ndash;&gt;   &lt;!&ndash; DefaultRolloverStrategy属性如不设置，则默认为最多同一文件夹下7个文件，这里设置了20 &ndash;&gt;-->
+        <!-- </RollingFile>-->
+
+        <!-- error.log -->
+        <RollingFile name="RollingErrorFile"
+                     fileName="${LOG_DIR}/error.log"
+                     filePattern="${LOG_DIR}/error-%d{yyyy-MM-dd}-%i.log"><!--如想自动压缩滚动文件，可以写成 .log.gz 就自动生成压缩文件了--><!-- 每次大小超过size或到时间间隔，则这日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档-->
+            <Filters>
+                <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <PatternLayout pattern="[%-level] [%highlight{%d{HH:mm:ss.SSS}] [%t] [%logger{36}] - %msg%n}{FATAL=red, ERROR=red, WARN=yellow, INFO=green, DEBUG=cyan, TRACE=blue}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+                <SizeBasedTriggeringPolicy size="100 MB"/><!--指定当文件体积大于size指定的值时，触发Rolling-->
+            </Policies>
+            <DefaultRolloverStrategy max="20"/><!-- 表示日志文件最大保留数 -->   <!-- DefaultRolloverStrategy属性如不设置，则默认为最多同一文件夹下7个文件，这里设置了20 -->
+        </RollingFile>
+
+        <!-- mybatis -->
+        <RollingFile name="RollingMybatisFile"
+                     fileName="${LOG_DIR}/mybatis.log"
+                     filePattern="${LOG_DIR}/error-%d{yyyy-MM-dd}-%i.log"><!--如想自动压缩滚动文件，可以写成 .log.gz 就自动生成压缩文件了--><!-- 每次大小超过size或到时间间隔，则这日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档-->
+            <PatternLayout pattern="[%-level] [%highlight{%d{HH:mm:ss.SSS}] [%t] [%logger{36}] - %msg%n}{FATAL=red, ERROR=red, WARN=yellow, INFO=green, DEBUG=cyan, TRACE=blue}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+                <SizeBasedTriggeringPolicy size="100 MB"/><!--指定当文件体积大于size指定的值时，触发Rolling-->
+            </Policies>
+            <DefaultRolloverStrategy max="20"/><!-- 表示日志文件最大保留数 -->   <!-- DefaultRolloverStrategy属性如不设置，则默认为最多同一文件夹下7个文件，这里设置了20 -->
+        </RollingFile>
+
+    </Appenders>
+
+
+    <!-- 日志记录器 -->
+    <Loggers>
+
+        <!-- 根 记录器 -->
+        <Root level="INFO">
+            <AppenderRef ref="RollingDefaultFile"/>
+            <AppenderRef ref="RollingErrorFile"/>
+            <AppenderRef ref="Console"/>
+        </Root>
+
+    </Loggers>
+
+
+</Configuration>

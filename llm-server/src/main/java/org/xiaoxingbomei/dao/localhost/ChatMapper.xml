@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.xiaoxingbomei.dao.localhost.ChatMapper" >
+
+    <insert id="insertChatHistoryList" parameterType="org.xiaoxingbomei.vo.LlmChatHistoryList">
+        INSERT INTO llm_chat_history_list
+        (
+         chat_id,
+         chat_tittle,
+         chat_tag
+        )
+        values
+            (
+             #{chatId},
+             #{chatTittle},
+             #{chatTag}
+            )
+    </insert>
+
+    <select id="getAllChatHistoryList" resultType="org.xiaoxingbomei.vo.LlmChatHistoryList">
+            SELECT
+                chat_id as chatId,
+                chat_tittle as chatTittle,
+                chat_tag as chatTag,
+                create_time as createTime,
+                update_time as updateTime
+                FROM llm_chat_history_list
+    </select>
+
+    <delete id="deleteChatHistoryList" parameterType="string">
+        delete from llm_chat_history_list
+        where chat_id = #{chat_id}
+    </delete>
+
+
+    <update id="updateChatHistoryList" parameterType="org.xiaoxingbomei.vo.LlmChatHistoryList">
+        update llm_chat_history_list
+        set
+            chat_tittle = #{chatTittle},
+            chat_tag = #{chatTag},
+            update_time = #{updateTime}
+        where chat_id = #{chatId}
+    </update>
+
+
+    <select id="getAllChatHistory" resultType="org.xiaoxingbomei.vo.LlmChatHistory">
+            SELECT
+                chat_id      as chatId,
+                chat_role    as chatRole,
+                chat_content as chatContent
+                FROM llm_chat_history
+    </select>
+
+    <select id="getChatHistoryById" parameterType="string" resultType="org.xiaoxingbomei.vo.LlmChatHistory">
+            SELECT
+                chat_id as chatId,
+                chat_role as chatRole,
+                chat_content as chatContent
+                FROM llm_chat_history
+                where chat_id = #{chat_id}
+    </select>
+
+    <insert id="insertChatHistory" parameterType="java.util.List">
+            INSERT INTO llm_chat_history
+            (
+             chat_id,
+             chat_role,
+             chat_content
+            )
+            values
+            <foreach collection="historys" item="history" separator=",">
+                (
+                 #{history.chatId},
+                 #{history.chatRole},
+                 #{history.chatContent}
+                )
+            </foreach>
+    </insert>
+
+    <delete id="deleteChatHistory">
+        delete from llm_chat_history
+        where chat_id = #{chat_id}
+    </delete>
+
+</mapper>

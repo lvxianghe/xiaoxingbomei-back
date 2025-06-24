@@ -1,5 +1,0 @@
-/target/*
-/target/
-/logs/*
-/.idea/
-/src/main/resources/application-dev.yml

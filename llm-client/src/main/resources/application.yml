@@ -1,0 +1,31 @@
+server:
+  port: 28929
+
+spring:
+  application:
+    name: mcp-client
+  ai:
+    mcp:
+      client:
+        # 启用 MCP Client
+        enabled: true
+        name: "mcp-client"
+        version: "1.0.0"
+        request-timeout: 30s
+        type: SYNC
+        toolcallback:
+          enabled: true
+        # SSE 传输配置
+        sse:
+          connections:
+            weather-server:
+              url: "http://localhost:28928"
+              sse-endpoint: "/sse"
+
+logging:
+  level:
+    org:
+      springframework:
+        ai: debug
+      xiaoxingbomei: debug
+    root: info 
