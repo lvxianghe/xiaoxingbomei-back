@@ -38,11 +38,20 @@ spring:
         name: "xiaoxingbomei-weather-server"
         version: "1.0.0"
         description: "小星星博美天气服务MCP Server"
+        type: SYNC
         # 添加 SSE 端点配置
         sse-endpoint: "/sse"
         sse-message-endpoint: "/mcp/message"
-        tools:
-          enabled: true
+        capabilities:
+          tool: true
+          resource: false
+          prompt: false
+          completion: false
+        # 显式启用工具功能
+        tool-change-notification: true
+    # 工具配置 - 显式启用
+    tools:
+      enabled: true
 
 ai:
   openai:
@@ -102,10 +111,8 @@ logging:
   level:
     org:
       springframework:
-        ai: debug  # 启用Spring AI的DEBUG日志
-      xiaoxingbomei:
-        config:
-          tools: debug  # 启用我们工具类的DEBUG日志
+        ai: debug
+      xiaoxingbomei: debug
     root: info
 
 

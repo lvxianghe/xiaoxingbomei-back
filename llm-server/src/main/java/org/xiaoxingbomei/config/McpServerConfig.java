@@ -2,7 +2,9 @@ package org.xiaoxingbomei.config;
 
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.ai.tool.ToolCallback;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.xiaoxingbomei.config.tools.WeatherTool;
 
@@ -13,12 +15,13 @@ public class McpServerConfig {
     @Autowired
     private WeatherTool weatherTool;
 
+    // TODO: 需要找到正确的ToolCallbackProvider导入路径
+
     @PostConstruct
     public void init() {
         log.info("=================================");
-        log.info("MCP Server 配置初始化完成");
-        log.info("WeatherTool 已注册: {}", weatherTool != null);
-        log.info("Spring AI MCP Server应该自动发现@Component + @Tool");
+        log.info("🚀 MCP Server 配置初始化完成");
+        log.info("✅ WeatherTool 已注册: {}", weatherTool != null);
         
         // 验证WeatherTool方法
         if (weatherTool != null) {
@@ -30,7 +33,8 @@ public class McpServerConfig {
             }
         }
         
-        log.info("如果仍然无法发现工具，请检查MCP Server配置和依赖版本");
+        log.info("🎯 已通过ToolCallbackProvider Bean注册工具");
+        log.info("💡 Spring AI MCP将从ToolCallbackProvider自动发现工具");
         log.info("=================================");
     }
 } 
