@@ -2,9 +2,7 @@ package org.xiaoxingbomei.config;
 
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.ai.tool.ToolCallback;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.xiaoxingbomei.config.tools.WeatherTool;
 
@@ -15,7 +13,7 @@ public class McpServerConfig {
     @Autowired
     private WeatherTool weatherTool;
 
-    // TODO: 需要找到正确的ToolCallbackProvider导入路径
+    // 暂时移除ToolCallback Bean注册，专注于确认syncTools为空的原因
 
     @PostConstruct
     public void init() {
