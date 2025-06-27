@@ -14,6 +14,7 @@ spring:
     name: ai
   main:
     allow-bean-definition-overriding: true
+    banner-mode: off
   servlet:
     multipart:
       max-file-size: 50MB
@@ -35,23 +36,11 @@ spring:
     mcp:
       server:
         enabled: true
-        name: "xiaoxingbomei-weather-server"
-        version: "1.0.0"
-        description: "小星星博美天气服务MCP Server"
-        type: SYNC
-        # 添加 SSE 端点配置
-        sse-endpoint: "/sse"
-        sse-message-endpoint: "/mcp/message"
-        capabilities:
-          tool: true
-          resource: false
-          prompt: false
-          completion: false
-        # 显式启用工具功能
-        tool-change-notification: true
-    # 工具配置 - 显式启用
-    tools:
-      enabled: true
+        # SSE 通信方式配置
+        sse:
+          enabled: true
+          endpoint: "/mcp/sse"
+
 
 ai:
   openai:
@@ -103,7 +92,7 @@ ai:
 
 datasource:
   localhost:
-    jdbc-url: jdbc:mysql://localhost:3306/ysx
+    jdbc-url: jdbc:mysql://localhost:3306/ysx-app
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -114,5 +103,6 @@ logging:
         ai: debug
       xiaoxingbomei: debug
     root: info
-
+  pattern:
+    console:
 

@@ -40,5 +40,15 @@ public class ApiConstant
         public static final String downloadFile       = "/ai/file/downloadFile";
     }
 
+    public class Mcp
+    {
+        public static final String health             = "/mcp/health";                      // MCP健康检查
+        public static final String tools              = "/mcp/tools";                       // 获取工具列表
+        public static final String info               = "/mcp/info";                        // MCP服务信息
+        public static final String enableTool         = "/mcp/tools/{toolName}/enable";     // 启用工具
+        public static final String disableTool        = "/mcp/tools/{toolName}/disable";    // 禁用工具
+        public static final String toolStatus         = "/mcp/tools/{toolName}/status";     // 工具状态
+    }
+
 
 }

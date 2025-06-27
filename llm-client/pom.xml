@@ -29,6 +29,12 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
+        <!-- chatClient 需要的模型注入依赖 -->
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-starter-model-openai</artifactId>
+        </dependency>
+
         <!-- MCP Client 依赖 -->
         <dependency>
             <groupId>org.springframework.ai</groupId>
@@ -54,6 +60,8 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
+
+
 
     </dependencies>
 

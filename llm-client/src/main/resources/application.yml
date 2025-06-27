@@ -5,23 +5,28 @@ spring:
   application:
     name: mcp-client
   ai:
+    # OpenAI配置
+    openai:
+      api-key: sk-YiB76FYEBysWcTUw69FEGVfwqMzf1iKMILvobZg3ALVHFl63
+      base-url: https://chatapi.littlewheat.com
+      chat:
+        options:
+          model: gpt-4o
+          temperature: 0.7
+    # MCP Client 配置
     mcp:
       client:
-        # 启用 MCP Client
         enabled: true
-        name: "mcp-client"
-        version: "1.0.0"
-        request-timeout: 30s
-        type: SYNC
-        toolcallback:
-          enabled: true
-        # SSE 传输配置
+        # SSE 连接配置（连接到MCP Server）
         sse:
           connections:
-            weather-server:
-              url: "http://localhost:28928"
-              sse-endpoint: "/sse"
+            weather-server: # MCP服务端连接名称
+              url: http://127.0.0.1:28928
+              sse-endpoint: http://127.0.0.1:28928/sse  # MCP Server端的SSE端点
 
+
+
+# 日志设置
 logging:
   level:
     org:
