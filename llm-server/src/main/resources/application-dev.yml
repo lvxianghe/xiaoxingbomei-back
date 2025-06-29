@@ -92,7 +92,7 @@ ai:
 
 datasource:
   localhost:
-    jdbc-url: jdbc:mysql://localhost:3306/ysx-app
+    jdbc-url: jdbc:mysql://localhost:3306/ysx-app?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver

@@ -31,9 +31,9 @@ public class MysqlConfigOfLocal
 
     // 第二数据源的 SqlSessionFactory
     @Bean
-    public SqlSessionFactory localhostSqlSessionFactory(DataSource dataSource) throws Exception {
+    public SqlSessionFactory localhostSqlSessionFactory() throws Exception {
         SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
-        factoryBean.setDataSource(dataSource);
+        factoryBean.setDataSource(localhostDataSource());
         
         // 设置Mapper XML文件的位置（从Java目录下查找）
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();

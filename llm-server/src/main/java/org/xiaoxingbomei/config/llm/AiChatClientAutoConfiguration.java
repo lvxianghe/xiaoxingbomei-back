@@ -29,14 +29,10 @@ import java.util.Map;
 public class AiChatClientAutoConfiguration
 {
 
-    @Autowired
-    ChatMemory chatMemory = MessageWindowChatMemory
-            .builder()
-            .maxMessages(10)
-            .build();
+    // ChatMemory 配置已移动到 ChatMemoryConfig 类中
 
     @Bean("openaiChatClientMap")
-    public Map<String, ChatClient> openAiChatClientMap(AiModelProperties properties)
+    public Map<String, ChatClient> openAiChatClientMap(AiModelProperties properties, ChatMemory chatMemory)
     {
         Map<String, ChatClient> map = new HashMap<>();
         properties.getOpenai().forEach((name, config) ->
@@ -85,7 +81,7 @@ public class AiChatClientAutoConfiguration
     }
 
     @Bean("ollamaChatClientMap")
-    public Map<String, ChatClient> ollamaChatClientMap(AiModelProperties properties)
+    public Map<String, ChatClient> ollamaChatClientMap(AiModelProperties properties, ChatMemory chatMemory)
     {
         Map<String, ChatClient> map = new HashMap<>();
         properties.getOllama().forEach((name, config) ->
