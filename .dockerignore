@@ -1,0 +1,57 @@
+# Maven构建目录
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# IDE文件
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# 日志文件
+*.log
+logs/
+
+# 临时文件
+*.tmp
+*.bak
+*.swp
+*~.nib
+
+# OS生成的文件
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Docker相关
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# 测试覆盖率
+.jacoco
+jacoco.exec
+
+# Spring Boot
+HELP.md
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# 其他
+README.md
+*.md 

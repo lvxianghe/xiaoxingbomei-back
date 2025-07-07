@@ -1,0 +1,73 @@
+version: '3.8'
+name: xiaoxingbomei
+
+services:
+  # MySQL数据库服务
+  mysql:
+    image: mysql:8.0
+    container_name: xiaoxingbomei-backend-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ysx-app
+    ports:
+      - "3308:3306"  # 避免与您现有的MySQL冲突
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ../mysql/init:/docker-entrypoint-initdb.d
+      - ../mysql/conf:/etc/mysql/conf.d
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+    networks:
+      - xiaoxingbomei-backend-network
+
+  # 后端SpringBoot服务
+  backend:
+    build: .
+    image: xiaoxingbomei-backend:latest
+    container_name: xiaoxingbomei-backend
+    restart: unless-stopped
+    ports:
+      - "28928:28928"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    volumes:
+      - backend_logs:/app/logs
+    networks:
+      - xiaoxingbomei-backend-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:28928/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # 前端服务已移除 - 可以单独运行或开发模式运行
+  # 如需前端容器，取消下面的注释：
+  # frontend:
+  #   image: lvxianghe/xiaoxingbomei-front:1.0.0
+  #   container_name: xiaoxingbomei-frontend
+  #   restart: unless-stopped
+  #   ports:
+  #     - "7777:7777"
+  #   depends_on:
+  #     - backend
+  #   networks:
+  #     - xiaoxingbomei-network
+
+# 数据卷
+volumes:
+  mysql_data:
+    driver: local
+  backend_logs:
+    driver: local
+
+# 网络
+networks:
+  xiaoxingbomei-backend-network:
+    driver: bridge 

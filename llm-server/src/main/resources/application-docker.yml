@@ -1,0 +1,90 @@
+# Docker环境配置
+server:
+  port: 28928
+  servlet:
+    context-path: /
+  tomcat:
+    max-http-header-size: 8MB
+    max-http-form-post-size: 100MB
+    max-swallow-size: -1
+
+spring:
+  application:
+    name: ai
+  main:
+    allow-bean-definition-overriding: true
+    banner-mode: off
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 100MB
+  # Docker环境数据库配置
+  datasource:
+    # 使用service名作为主机名（在同一Docker网络中）
+    url: jdbc:mysql://mysql:3306/ysx-app?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+  ai:
+    chat:
+      client:
+        enabled: false
+    # OpenAI配置
+    openai:
+      api-key: sk-YiB76FYEBysWcTUw69FEGVfwqMzf1iKMILvobZg3ALVHFl63
+      base-url: https://chatapi.littlewheat.com
+      embedding:
+        options:
+          model: text-embedding-3-large
+    ollama:
+      base-url: "http://disabled-placeholder:11434"
+    # MCP Server 配置
+    mcp:
+      server:
+        enabled: true
+        sse:
+          enabled: true
+          endpoint: "/mcp/sse"
+
+ai:
+  openai:
+    grok-3:
+      base-url: https://chatapi.littlewheat.com
+      api-key: sk-YiB76FYEBysWcTUw69FEGVfwqMzf1iKMILvobZg3ALVHFl63
+      model: grok-3
+      temperature: 0.7
+      embeddingModelName: text-embedding-v3
+      embeddingDimensions: 1024
+      modelDescription: "Grok-3是xAI开发的最新一代大语言模型，具有强大的推理和创作能力"
+      modelTag: "推理,创作,多模态"
+    gpt-4o:
+      base-url: https://chatapi.littlewheat.com
+      api-key: sk-YiB76FYEBysWcTUw69FEGVfwqMzf1iKMILvobZg3ALVHFl63
+      model: gpt-4o
+      temperature: 0.5
+      embeddingModelName: text-embedding-v3
+      embeddingDimensions: 1024
+      modelDescription: "OpenAI GPT-4o是最新的多模态大语言模型，支持文本、图像和音频处理"
+      modelTag: "多模态,文本生成,图像理解,音频处理"
+
+# 自定义数据源配置 - Docker环境
+datasource:
+  localhost:
+    jdbc-url: jdbc:mysql://mysql:3306/ysx-app?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+logging:
+  level:
+    org:
+      springframework:
+        ai: debug
+      xiaoxingbomei: debug
+    root: info 
