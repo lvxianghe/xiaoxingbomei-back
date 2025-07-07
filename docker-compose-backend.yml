@@ -14,8 +14,8 @@ services:
       - "3308:3306"  # 避免与您现有的MySQL冲突
     volumes:
       - mysql_data:/var/lib/mysql
-      - ../mysql/init:/docker-entrypoint-initdb.d
-      - ../mysql/conf:/etc/mysql/conf.d
+      - ./mysql/init:/docker-entrypoint-initdb.d
+      - ./mysql/conf:/etc/mysql/conf.d
     command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]

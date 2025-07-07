@@ -1,0 +1,29 @@
+[mysqld]
+# 字符集配置
+character-set-server=utf8mb4
+collation-server=utf8mb4_unicode_ci
+
+# 连接配置
+max_connections=200
+max_connect_errors=1000
+
+# InnoDB配置
+default-storage-engine=INNODB
+innodb_buffer_pool_size=256M
+innodb_file_per_table=1
+
+# SQL模式（开发友好）
+sql_mode=STRICT_TRANS_TABLES,NO_ZERO_DATE,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO
+
+# 时区设置
+default-time-zone='+8:00'
+
+# 慢查询日志
+slow_query_log=1
+long_query_time=2
+
+[mysql]
+default-character-set=utf8mb4
+
+[client]
+default-character-set=utf8mb4 
